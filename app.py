@@ -95,7 +95,7 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
     for i in res.keys():
         with tab_list[tab_number]:
             st.write(i)
-
+            print(res[i])
             dist_branches = []
             for x in range(len(res[i])):
                 for y in range(len(res[i][x])):
@@ -103,7 +103,10 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
                     try:
                         if(((str(res[i][x][y][0])).split("-")) not in dist_branches):
                             dist_branches.append(((str(res[i][x][y][0])).split("-"))[2])
-                        
+                    except:
+                        pass
+
+                    try:
                         if(((str(res[i][x][y][1])).split("-")) not in dist_branches):
                             dist_branches.append(((str(res[i][x][y][1])).split("-"))[2])
                     except:
@@ -191,6 +194,7 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
             st.write("Total: " + str(total).center(60))
             st.divider()
             tab_number += 1
+            #print(i, dist_branches)
 
     #st.write(res)
     
