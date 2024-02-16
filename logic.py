@@ -21,7 +21,7 @@ def transpose(l1, l2):
 
 
 
-def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam_type):
+def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam_type, capacities):
     xl = pds.ExcelFile(file)
     res = len(xl.sheet_names)
     sheets = []
@@ -90,10 +90,12 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
                         if(counters[cur_left][0] < counters[cur_left][1]):
                             benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
                             counters[cur_left][0] += 1
-                    if(cur_right<len(counters)):
-                        if(counters[cur_right][0] < counters[cur_right][1]):
-                            benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
-                            counters[cur_right][0] += 1
+                    if(y%2 == 0):
+                        if(cur_right<len(counters)):
+                            if(counters[cur_right][0] < counters[cur_right][1]):
+                                benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
+                                counters[cur_right][0] += 1
+                        
         rooms.append(benches)
 
     for i in range(len(selected_halls)):
@@ -137,6 +139,8 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
                             benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
                             counters[cur_right][0] += 1
         rooms.append(benches)
+    
+
     for i in range(len(rooms)):
         for j in range(len(rooms[i])):
             if(j%2==1): 
@@ -158,4 +162,98 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
 
     
     return result
-        
+
+
+"""
+Capacity = 60
+for i in range(len(selected_rooms)):
+        m = 5
+        n = 6
+        benches = [[["-1", "-1"] for x in range(n)] for y in range(m)]
+        if(len(sheets) == 1):
+            for x in range(m):
+                for y in range(n):
+                    if(counters[cur_left][0] >= counters[cur_left][1]):
+                        break
+                    benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                    counters[cur_left][0] += 1
+        else:
+            for x in range(m):
+                for y in range(n):
+                    if(cur_left<len(counters)):
+                        if(counters[cur_left][0] >= counters[cur_left][1]):
+                            if(cur_left>cur_right):
+                                cur_left += 1
+                            else:
+                                cur_left += 1
+                                if(cur_left == cur_right):
+                                    cur_left += 1
+                                
+                    if(cur_right<len(counters)):
+                        if(counters[cur_right][0] >= counters[cur_right][1]):
+                            if(cur_right>cur_left):
+                                cur_right += 1
+                            else:
+                                cur_right += 1
+                                if(cur_right == cur_left):
+                                    cur_right += 1
+                        
+                                
+                    if(cur_left<len(counters)):
+                        if(counters[cur_left][0] < counters[cur_left][1]):
+                            benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                            counters[cur_left][0] += 1
+                    if(cur_right<len(counters)):
+                        if(counters[cur_right][0] < counters[cur_right][1]):
+                            benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
+                            counters[cur_right][0] += 1
+        rooms.append(benches)
+"""
+
+"""
+Capacity = 45
+for i in range(len(selected_rooms)):
+        m = 5
+        n = 6
+        benches = [[["-1", "-1"] for x in range(n)] for y in range(m)]
+        if(len(sheets) == 1):
+            for x in range(m):
+                for y in range(n):
+                    if(counters[cur_left][0] >= counters[cur_left][1]):
+                        break
+                    benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                    counters[cur_left][0] += 1
+        else:
+            for x in range(m):
+                for y in range(n):
+                    if(cur_left<len(counters)):
+                        if(counters[cur_left][0] >= counters[cur_left][1]):
+                            if(cur_left>cur_right):
+                                cur_left += 1
+                            else:
+                                cur_left += 1
+                                if(cur_left == cur_right):
+                                    cur_left += 1
+                                
+                    if(cur_right<len(counters)):
+                        if(counters[cur_right][0] >= counters[cur_right][1]):
+                            if(cur_right>cur_left):
+                                cur_right += 1
+                            else:
+                                cur_right += 1
+                                if(cur_right == cur_left):
+                                    cur_right += 1
+                        
+                                
+                    if(cur_left<len(counters)):
+                        if(counters[cur_left][0] < counters[cur_left][1]):
+                            benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                            counters[cur_left][0] += 1
+                    if(y%2 == 0):
+                        if(cur_right<len(counters)):
+                            if(counters[cur_right][0] < counters[cur_right][1]):
+                                benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
+                                counters[cur_right][0] += 1
+                        
+        rooms.append(benches)
+"""
