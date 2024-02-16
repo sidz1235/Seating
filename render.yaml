@@ -1,4 +1,2 @@
-services:
-  - name: analysis-chat1
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run app.py 
+buildCommand: pip install -r requirements.txt
+startCommand: streamlit run app.py 
