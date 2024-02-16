@@ -1,4 +1,6 @@
+
 import pandas as pds
+import itertools
 
 branch_codes = {"733":"CSE", "737":"IT", "735":"ECE", "734":"EEE", "748":"AIML", "732":"CIVIL", "736":"MECH"}
 room_capacity = {"normal":30 , "hall": 66} #5x6, 11x6
