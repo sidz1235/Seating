@@ -11,7 +11,7 @@ def ranges(i):
         yield group[0][1], group[-1][1]
 
 # Set the title of the page
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 st.title("Vasavi College of Engineering")
 
 file = st.file_uploader("Upload a CSV/XLSX/XLS file", type=["csv", "xlsx", "xls"])
@@ -39,13 +39,10 @@ if file is not None:
         df = pd.read_excel(xls, sheet_name=selected_sheet)
     
     st.write(df)
-    #st.download_button(label="Download as CSV", data=df.to_csv(), file_name="data.csv", mime="text/csv")
 
-# Create a dropdown menu to select the branch
 if(sheet_names is not None):
     branch = st.multiselect("Select Branch", sheet_names)
-#num_rooms = st.number_input("Enter Number of Rooms", step=1, value=0, min_value = 0)
-#num_halls = st.number_input("Enter Number of Halls", step=1, value=0, min_value = 0)
+
 selected_blocks = st.multiselect("Select Blocks", list(block_rooms.keys()))
 
 for block in selected_blocks:
@@ -57,31 +54,13 @@ for block in selected_blocks:
         halls = st.multiselect("Select Halls in Block " + str(block), block_halls[block])
         selected_halls.extend(halls)
 
-#selected_rooms = set(selected_rooms)
-#selected_halls = set(selected_halls)
-
 room_count = len(selected_rooms)
 hall_count = len(selected_halls)
 
-# style
-# th_props = [
-#   ('font-size', '10px'),
-#   ('text-align', 'center'),
-#   ('font-weight', 'bold'),
-#   ('color', '#6d6d6d'),
-#   ('background-color', '#f7ffff')
-#   ]
-                               
-# td_props = [
-#   ('font-size', '10px')
-#   ]
-                                 
-# styles = [
-#   dict(selector="th", props=th_props),
-#   dict(selector="td", props=td_props)
-#   ]
-
-capacities = st.selectbox("Select Capacity", [30, 45, 60])
+if(exam_type == "Internal"):
+    capacities = st.selectbox("Select Capacity", [30, 45, 60])
+else:
+    capacities = 0
 
 if(st.button("Generate Seating") and file and selected_blocks and (selected_halls or selected_rooms) and branch):
     res = logic.generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam_type, capacities)
@@ -90,12 +69,15 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
     cur_col = 0
 
     for i in res.keys():
-            st.write(i)
-            print(res[i])
+            st.header('Vasavi College Of Engineering')
+            st.markdown("<br>",unsafe_allow_html=True)
+            
+            st.subheader("Room No : " + i)
+           
             dist_branches = []
             for x in range(len(res[i])):
                 for y in range(len(res[i][x])):
-                    #print(((str(room[x][y][0])).split("-"))[2])
+                    
                     try:
                         if(((str(res[i][x][y][0])).split("-")) not in dist_branches):
                             dist_branches.append(((str(res[i][x][y][0])).split("-"))[2])
@@ -122,8 +104,6 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
                             count += 1
                     except:
                         pass
-            
-            #st.write("Branch".center(10)+"Number of Students".center(30))
 
             for x in range(len(res[i])):
                 cur_col = 0
@@ -159,7 +139,7 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
             outputdframe = (pd.DataFrame(res[i]))
             
             output_df = pd.DataFrame(res[i]).rename(columns={0: 'Desk-1', 1: 'Desk-2', 2: 'Desk-3', 3: 'Desk-4', 4: 'Desk-5', 5: 'Desk-6'})  
-            #df2 = output_df.style.set_properties(**{'text-align': 'center'})
+            
 
             if(i in selected_halls):
                 st.dataframe(output_df, hide_index = True, use_container_width = True, height = 422)
@@ -168,43 +148,46 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
 
 
             total = 0
+            branch_mem = {}
             for k in range(len(dist_branches)):
-                #print(dist_branches[i][2])
+               
                 dist_branches[k][2].sort()
                 dist_branches[k][3].sort()
+
+                branch_name = (str(branch_codes[dist_branches[k][1]]).center(60))
                 
-                #print(list(ranges(dist_branches[i][3])))
-                
-                #print(dist_branches[i][2])
-                temp_string = ""
-                temp_string += (str(branch_codes[dist_branches[k][1]]).center(60))
-                #print(dist_branches[k])
+                branch_list = ""
                 for j in range(len(list(ranges(dist_branches[k][3])))):
                     tem = list(ranges(dist_branches[k][3]))
                     print(tem[j][0], tem[j][1])
                     if(tem[j][0] == tem[j][1]):
-                        temp_string += (str(str(tem[j][0])[:4]+"-"+str(tem[j][0])[4:6]+"-"+str(tem[j][0])[6:9]+"-"+str(tem[j][0])[9:]+",  ").center(30))
+                        branch_list += (str(str(tem[j][0])[:4]+"-"+str(tem[j][0])[4:6]+"-"+str(tem[j][0])[6:9]+"-"+str(tem[j][0])[9:]+",  ").center(30))
                     else:
-                        temp_string += (str(str(tem[j][0])[:4]+"-"+str(tem[j][0])[4:6]+"-"+str(tem[j][0])[6:9]+"-"+str(tem[j][0])[9:]+" To "+str(tem[j][1])[:4]+"-"+str(tem[j][1])[4:6]+"-"+str(tem[j][1])[6:9]+"-"+str(tem[j][1])[9:]+",  ").center(30))
+                        branch_list += (str(str(tem[j][0])[:4]+"-"+str(tem[j][0])[4:6]+"-"+str(tem[j][0])[6:9]+"-"+str(tem[j][0])[9:]+" To "+str(tem[j][1])[:4]+"-"+str(tem[j][1])[4:6]+"-"+str(tem[j][1])[6:9]+"-"+str(tem[j][1])[9:]+",  ").center(30))
                 total += dist_branches[k][0]
-                temp_string += str(dist_branches[k][0]).center(60)
-                st.write(temp_string)
+                branch_strength = str(dist_branches[k][0]).center(60)
+                
+                branch_mem[str(k)] = [branch_name,branch_list,branch_strength]
 
-            st.write("Total: " + str(total).center(60))
+            branch_df = pd.DataFrame(branch_mem).T
+
+            branch_df = branch_df.rename(columns = {0:"Branch",1:"Hall Ticket No",2:"Branch Total"})
+
+            st.dataframe(branch_df,hide_index = True)
+
+            st.write(f"Total Number of Students in Room No {i}    :  " + str(total).center(60))
+
+            st.markdown("<br>",unsafe_allow_html=True)
+            st.markdown("<br>",unsafe_allow_html=True)
+            st.markdown("<br>",unsafe_allow_html=True)
+            st.markdown("<br>",unsafe_allow_html=True)
             st.divider()
-            #print(i, dist_branches)
 
-    #st.write(res)
-    
+
 
 else:
     st.write("Fill all the Fields")
-#print(selected_rooms)
-#print(selected_halls)
 
-
-
-#st.write(f"You selected the {branch} branch.")
 
 
     

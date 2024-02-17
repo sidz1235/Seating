@@ -54,7 +54,151 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
         cur_left = 0
         cur_right = 1
 
-    if(capacities == 45):
+    if(exam_type == "External"):
+        cur = 0
+        while((cur == cur_left or cur == cur_right or (cur < len(counters) and counters[cur][0] >= counters[cur][1]))):
+            cur += 1
+        
+        print("Current:", cur)
+
+        count = 0
+        flag = 0
+
+        for i in range(len(selected_rooms)):
+            m = 5
+            n = 6
+            benches = [[["-1"] for x in range(n)] for y in range(m)]
+            if(len(sheets) == 1):
+                for x in range(m):
+                    for y in range(n):
+                        if(counters[cur_left][0] >= counters[cur_left][1]):
+                            break
+                        benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                        counters[cur_left][0] += 1
+            else:
+                cur_left, cur_right, cur = 0, 1, 2
+                while((cur_left == cur or cur_left == cur_right or (cur_left < len(counters) and counters[cur_left][0] >= counters[cur_left][1]))):
+                    cur_left += 1
+                while((cur_right == cur or cur_right == cur_left or (cur_right < len(counters) and counters[cur_right][0] >= counters[cur_right][1]))):
+                    cur_right += 1
+                while((cur == cur_left or cur == cur_right or (cur < len(counters) and counters[cur][0] >= counters[cur][1]))):
+                    cur += 1
+                for x in range(m):
+                    for y in range(n):
+                        if(cur_left<len(counters)):
+                            if(counters[cur_left][0] >= counters[cur_left][1]):
+                                if(cur_left>cur_right and cur_left>cur):
+                                    cur_left += 1
+                                else:
+                                    cur_left += 1
+                                    while(cur_left == cur_right or cur_left == cur or (cur_left<len(counters) and counters[cur_left][0] >= counters[cur_left][1])):
+                                        cur_left += 1
+                                    
+                        if(cur_right<len(counters)):
+                            if(counters[cur_right][0] >= counters[cur_right][1] or (cur_right<len(counters) and counters[cur_right][0] >= counters[cur_right][1])):
+                                if(cur_right>cur_left and cur_right>cur):
+                                    cur_right += 1
+                                else:
+                                    cur_right += 1
+                                    while(cur_right == cur_left or cur_right == cur):
+                                        cur_right += 1
+                                    
+                        if(cur<len(counters)):
+                            if(counters[cur][0] >= counters[cur][1] or (cur<len(counters) and counters[cur][0] >= counters[cur][1])):
+                                if(cur>cur_left and cur>cur_right):
+                                    cur += 1
+                                else:
+                                    cur += 1
+                                    while(cur == cur_left or cur == cur_right):
+                                        cur += 1
+                        print("NOW: ", cur, cur_left, cur_right, count, len(counters))
+                        if(cur < len(counters)):
+                            if(cur_left < len(counters) and cur_right < len(counters)):
+                                if(count%3 == 0): 
+                                    if(cur_left<len(counters)):
+                                        if(counters[cur_left][0] < counters[cur_left][1]):
+                                            benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur_left][0] += 1
+                                            count += 1
+                                elif(count%3 == 1):
+                                    if(cur_right<len(counters)):
+                                        if(counters[cur_right][0] < counters[cur_right][1]):
+                                            benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur_right][0] += 1
+                                            count += 1
+                                elif(count%3 == 2):
+                                    if(cur<len(counters)):
+                                        if(counters[cur][0] < counters[cur][1]):
+                                            benches[x][y][0] = sheets[cur][counters[cur][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur][0] += 1
+                                            count += 1
+                            else:
+                                if(cur_left >= len(counters) and cur_right >= len(counters)):
+                                    if(cur<len(counters)):
+                                        if(counters[cur][0] < counters[cur][1]):
+                                            benches[x][y][0] = sheets[cur][counters[cur][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur][0] += 1
+                                            count += 1
+                                else:
+                                    if(count%2 == 0):
+                                        if(cur_left<len(counters)):
+                                            if(counters[cur_left][0] < counters[cur_left][1]):
+                                                benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                                print("Bench: ", benches[x][y][0])
+                                                counters[cur_left][0] += 1
+                                                count += 1
+                                        if(cur_right<len(counters)):
+                                            if(counters[cur_right][0] < counters[cur_right][1]):
+                                                benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                                print("Bench: ", benches[x][y][0])
+                                                counters[cur_right][0] += 1
+                                                count += 1
+                                    elif(count%2 == 1):
+                                        if(cur<len(counters)):
+                                            if(counters[cur][0] < counters[cur][1]):
+                                                benches[x][y][0] = sheets[cur][counters[cur][0]]
+                                                print("Bench: ", benches[x][y][0])
+                                                counters[cur][0] += 1
+                                                count += 1
+                        else:
+                            if(flag == 0):
+                                count = 0
+                                flag = 1
+
+                            if(cur_left >= len(counters) or cur_right >= len(counters)):
+                                if(cur_left<len(counters)):
+                                        if(counters[cur_left][0] < counters[cur_left][1]):
+                                            benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur_left][0] += 1
+                                if(cur_right<len(counters)):
+                                        if(counters[cur_right][0] < counters[cur_right][1]):
+                                            benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur_right][0] += 1
+                            else:
+                                if(count%2 == 0): 
+                                    if(cur_left<len(counters)):
+                                        if(counters[cur_left][0] < counters[cur_left][1]):
+                                            benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur_left][0] += 1
+                                            count += 1
+                                elif(count%2 == 1):
+                                    if(cur_right<len(counters)):
+                                        if(counters[cur_right][0] < counters[cur_right][1]):
+                                            benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur_right][0] += 1
+                                            count += 1
+                        print(cur, cur_left, cur_right, count)
+
+            rooms.append(benches)
+    elif(capacities == 45):
         for i in range(len(selected_rooms)):
             m = 5
             n = 6
@@ -67,6 +211,12 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
                         benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
                         counters[cur_left][0] += 1
             else:
+                cur_left, cur_right = 0, 1
+                while(cur_left < len(counters) and counters[cur_left][0] >= counters[cur_left][1]):
+                    cur_left += 1
+                while(cur_right == cur_left or (cur_right < len(counters) and counters[cur_right][0] >= counters[cur_right][1])):
+                    cur_right += 1
+                
                 for x in range(m):
                     for y in range(n):
                         if(cur_left<len(counters)):
@@ -112,6 +262,12 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
                         benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
                         counters[cur_left][0] += 1
             else:
+                cur_left, cur_right = 0, 1
+                while(cur_left < len(counters) and counters[cur_left][0] >= counters[cur_left][1]):
+                    cur_left += 1
+                while(cur_right == cur_left or (cur_right < len(counters) and counters[cur_right][0] >= counters[cur_right][1])):
+                    cur_right += 1
+
                 for x in range(m):
                     for y in range(n):
                         if(cur_left<len(counters)):
@@ -143,10 +299,73 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
                                 counters[cur_right][0] += 1
             rooms.append(benches)
     elif(capacities == 30):
-        pass
-    
-    #print("Current", cur_left, cur_right, counters[cur_left], counters[cur_right])
 
+        count = 0
+
+        for i in range(len(selected_rooms)):
+            m = 5
+            n = 6
+            benches = [[["-1", "-1"] for x in range(n)] for y in range(m)]
+            if(len(sheets) == 1):
+                for x in range(m):
+                    for y in range(n):
+                        if(counters[cur_left][0] >= counters[cur_left][1]):
+                            break
+                        benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                        counters[cur_left][0] += 1
+            else:
+                cur_left, cur_right = 0, 1
+                while(cur_left < len(counters) and counters[cur_left][0] >= counters[cur_left][1]):
+                    cur_left += 1
+                while(cur_right == cur_left or (cur_right < len(counters) and counters[cur_right][0] >= counters[cur_right][1])):
+                    cur_right += 1
+
+                for x in range(m):
+                    for y in range(n):
+                        if(cur_left<len(counters)):
+                            if(counters[cur_left][0] >= counters[cur_left][1]):
+                                if(cur_left>cur_right):
+                                    cur_left += 1
+                                else:
+                                    cur_left += 1
+                                    if(cur_left == cur_right):
+                                        cur_left += 1
+                                    
+                        if(cur_right<len(counters)):
+                            if(counters[cur_right][0] >= counters[cur_right][1]):
+                                if(cur_right>cur_left):
+                                    cur_right += 1
+                                else:
+                                    cur_right += 1
+                                    if(cur_right == cur_left):
+                                        cur_right += 1
+                            
+                        if(count%2 == 0):   
+                            if(cur_left<len(counters)):
+                                if(counters[cur_left][0] < counters[cur_left][1]):
+                                    benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                    counters[cur_left][0] += 1
+                                    count += 1
+                            else:
+                                count += 1
+                        elif(count%2 == 1):
+                            if(cur_right<len(counters)):
+                                if(counters[cur_right][0] < counters[cur_right][1]):
+                                    benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                    counters[cur_right][0] += 1
+                                    count += 1
+                            else:
+                                count += 1
+            rooms.append(benches)
+
+    cur = 0
+    while((cur == cur_left or cur == cur_right or (cur < len(counters) and counters[cur][0] >= counters[cur][1]))):
+        cur += 1
+    
+    print("Current:", cur)
+
+    count = 0
+    flag = 0
 
     for i in range(len(selected_halls)):
         m = 6
@@ -160,40 +379,126 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
                     benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
                     counters[cur_left][0] += 1
         else:
+            cur_left, cur_right, cur = 0, 1, 2
+            while((cur_left == cur or cur_left == cur_right or (cur_left < len(counters) and counters[cur_left][0] >= counters[cur_left][1]))):
+                cur_left += 1
+            while((cur_right == cur or cur_right == cur_left or (cur_right < len(counters) and counters[cur_right][0] >= counters[cur_right][1]))):
+                cur_right += 1
+            while((cur == cur_left or cur == cur_right or (cur < len(counters) and counters[cur][0] >= counters[cur][1]))):
+                cur += 1
             for x in range(m):
                 for y in range(n):
                     if(cur_left<len(counters)):
                         if(counters[cur_left][0] >= counters[cur_left][1]):
-                            if(cur_left>cur_right):
+                            if(cur_left>cur_right and cur_left>cur):
                                 cur_left += 1
                             else:
                                 cur_left += 1
-                                if(cur_left == cur_right):
+                                while(cur_left == cur_right or cur_left == cur or (cur_left<len(counters) and counters[cur_left][0] >= counters[cur_left][1])):
                                     cur_left += 1
                                 
                     if(cur_right<len(counters)):
-                        if(counters[cur_right][0] >= counters[cur_right][1]):
-                            if(cur_right>cur_left):
+                        if(counters[cur_right][0] >= counters[cur_right][1] or (cur_right<len(counters) and counters[cur_right][0] >= counters[cur_right][1])):
+                            if(cur_right>cur_left or cur_right>cur):
                                 cur_right += 1
                             else:
                                 cur_right += 1
-                                if(cur_right == cur_left):
+                                while(cur_right == cur_left or cur_right == cur):
                                     cur_right += 1
+                                
+                    if(cur<len(counters)):
+                        if(counters[cur][0] >= counters[cur][1] or (cur<len(counters) and counters[cur][0] >= counters[cur][1])):
+                            if(cur>cur_left or cur>cur_right):
+                                cur += 1
+                            else:
+                                cur += 1
+                                while(cur == cur_left or cur == cur_right):
+                                    cur += 1
 
-                    if(y%2 == 0): 
-                        if(cur_left<len(counters)):
-                            if(counters[cur_left][0] < counters[cur_left][1]):
-                                benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
-                                print("Bench: ", benches[x][y][0])
-                                counters[cur_left][0] += 1
-                    if(y%2 == 1):
-                        if(cur_right<len(counters)):
-                            if(counters[cur_right][0] < counters[cur_right][1]):
-                                benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
-                                print("Bench: ", benches[x][y][0])
-                                counters[cur_right][0] += 1
-                    if(x%3 == 2):
-                        pass
+                    if(cur < len(counters)):
+                        if(cur_left < len(counters) and cur_right < len(counters)):
+                            if(count%3 == 0): 
+                                if(cur_left<len(counters)):
+                                    if(counters[cur_left][0] < counters[cur_left][1]):
+                                        benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                        print("Bench: ", benches[x][y][0])
+                                        counters[cur_left][0] += 1
+                                        count += 1
+                            elif(count%3 == 1):
+                                if(cur_right<len(counters)):
+                                    if(counters[cur_right][0] < counters[cur_right][1]):
+                                        benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                        print("Bench: ", benches[x][y][0])
+                                        counters[cur_right][0] += 1
+                                        count += 1
+                            elif(count%3 == 2):
+                                if(cur<len(counters)):
+                                    if(counters[cur][0] < counters[cur][1]):
+                                        benches[x][y][0] = sheets[cur][counters[cur][0]]
+                                        print("Bench: ", benches[x][y][0])
+                                        counters[cur][0] += 1
+                                        count += 1
+                        else:
+                                if(cur_left >= len(counters) and cur_right >= len(counters)):
+                                    if(cur<len(counters)):
+                                        if(counters[cur][0] < counters[cur][1]):
+                                            benches[x][y][0] = sheets[cur][counters[cur][0]]
+                                            print("Bench: ", benches[x][y][0])
+                                            counters[cur][0] += 1
+                                            count += 1
+                                else:
+                                    if(count%2 == 0):
+                                        if(cur_left<len(counters)):
+                                            if(counters[cur_left][0] < counters[cur_left][1]):
+                                                benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                                print("Bench: ", benches[x][y][0])
+                                                counters[cur_left][0] += 1
+                                                count += 1
+                                        if(cur_right<len(counters)):
+                                            if(counters[cur_right][0] < counters[cur_right][1]):
+                                                benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                                print("Bench: ", benches[x][y][0])
+                                                counters[cur_right][0] += 1
+                                                count += 1
+                                    elif(count%2 == 1):
+                                        if(cur<len(counters)):
+                                            if(counters[cur][0] < counters[cur][1]):
+                                                benches[x][y][0] = sheets[cur][counters[cur][0]]
+                                                print("Bench: ", benches[x][y][0])
+                                                counters[cur][0] += 1
+                                                count += 1
+                    else:
+                        if(flag == 0):
+                            count = 0
+                            flag = 1
+
+                        if(cur_left >= len(counters) or cur_right >= len(counters)):
+                            if(cur_left<len(counters)):
+                                    if(counters[cur_left][0] < counters[cur_left][1]):
+                                        benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                        print("Bench: ", benches[x][y][0])
+                                        counters[cur_left][0] += 1
+                            if(cur_right<len(counters)):
+                                    if(counters[cur_right][0] < counters[cur_right][1]):
+                                        benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                        print("Bench: ", benches[x][y][0])
+                                        counters[cur_right][0] += 1
+                        else:
+                            if(count%2 == 0): 
+                                if(cur_left<len(counters)):
+                                    if(counters[cur_left][0] < counters[cur_left][1]):
+                                        benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                        print("Bench: ", benches[x][y][0])
+                                        counters[cur_left][0] += 1
+                                        count += 1
+                            elif(count%2 == 1):
+                                if(cur_right<len(counters)):
+                                    if(counters[cur_right][0] < counters[cur_right][1]):
+                                        benches[x][y][0] = sheets[cur_right][counters[cur_right][0]]
+                                        print("Bench: ", benches[x][y][0])
+                                        counters[cur_right][0] += 1
+                                        count += 1
+                                
 
         rooms.append(benches)
     
@@ -219,98 +524,3 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
 
     
     return result
-
-
-"""
-Capacity = 60
-for i in range(len(selected_rooms)):
-        m = 5
-        n = 6
-        benches = [[["-1", "-1"] for x in range(n)] for y in range(m)]
-        if(len(sheets) == 1):
-            for x in range(m):
-                for y in range(n):
-                    if(counters[cur_left][0] >= counters[cur_left][1]):
-                        break
-                    benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
-                    counters[cur_left][0] += 1
-        else:
-            for x in range(m):
-                for y in range(n):
-                    if(cur_left<len(counters)):
-                        if(counters[cur_left][0] >= counters[cur_left][1]):
-                            if(cur_left>cur_right):
-                                cur_left += 1
-                            else:
-                                cur_left += 1
-                                if(cur_left == cur_right):
-                                    cur_left += 1
-                                
-                    if(cur_right<len(counters)):
-                        if(counters[cur_right][0] >= counters[cur_right][1]):
-                            if(cur_right>cur_left):
-                                cur_right += 1
-                            else:
-                                cur_right += 1
-                                if(cur_right == cur_left):
-                                    cur_right += 1
-                        
-                                
-                    if(cur_left<len(counters)):
-                        if(counters[cur_left][0] < counters[cur_left][1]):
-                            benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
-                            counters[cur_left][0] += 1
-                    if(cur_right<len(counters)):
-                        if(counters[cur_right][0] < counters[cur_right][1]):
-                            benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
-                            counters[cur_right][0] += 1
-        rooms.append(benches)
-"""
-
-"""
-Capacity = 45
-for i in range(len(selected_rooms)):
-        m = 5
-        n = 6
-        benches = [[["-1", "-1"] for x in range(n)] for y in range(m)]
-        if(len(sheets) == 1):
-            for x in range(m):
-                for y in range(n):
-                    if(counters[cur_left][0] >= counters[cur_left][1]):
-                        break
-                    benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
-                    counters[cur_left][0] += 1
-        else:
-            for x in range(m):
-                for y in range(n):
-                    if(cur_left<len(counters)):
-                        if(counters[cur_left][0] >= counters[cur_left][1]):
-                            if(cur_left>cur_right):
-                                cur_left += 1
-                            else:
-                                cur_left += 1
-                                if(cur_left == cur_right):
-                                    cur_left += 1
-                                
-                    if(cur_right<len(counters)):
-                        if(counters[cur_right][0] >= counters[cur_right][1]):
-                            if(cur_right>cur_left):
-                                cur_right += 1
-                            else:
-                                cur_right += 1
-                                if(cur_right == cur_left):
-                                    cur_right += 1
-                        
-                                
-                    if(cur_left<len(counters)):
-                        if(counters[cur_left][0] < counters[cur_left][1]):
-                            benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
-                            counters[cur_left][0] += 1
-                    if(y%2 == 0):
-                        if(cur_right<len(counters)):
-                            if(counters[cur_right][0] < counters[cur_right][1]):
-                                benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
-                                counters[cur_right][0] += 1
-                        
-        rooms.append(benches)
-"""
