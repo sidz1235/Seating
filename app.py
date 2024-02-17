@@ -89,11 +89,7 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
     cur_row = 0
     cur_col = 0
 
-    tab_list = st.tabs(list(res.keys()))
-    tab_number = 0
-
     for i in res.keys():
-        with tab_list[tab_number]:
             st.write(i)
             print(res[i])
             dist_branches = []
@@ -165,7 +161,10 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
             output_df = pd.DataFrame(res[i]).rename(columns={0: 'Desk-1', 1: 'Desk-2', 2: 'Desk-3', 3: 'Desk-4', 4: 'Desk-5', 5: 'Desk-6'})  
             #df2 = output_df.style.set_properties(**{'text-align': 'center'})
 
-            st.dataframe(output_df, hide_index = True, use_container_width = True)
+            if(i in selected_halls):
+                st.dataframe(output_df, hide_index = True, use_container_width = True, height = 422)
+            else:
+                st.dataframe(output_df, hide_index = True, use_container_width = True)
 
 
             total = 0
@@ -179,7 +178,7 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
                 #print(dist_branches[i][2])
                 temp_string = ""
                 temp_string += (str(branch_codes[dist_branches[k][1]]).center(60))
-                print(dist_branches[k])
+                #print(dist_branches[k])
                 for j in range(len(list(ranges(dist_branches[k][3])))):
                     tem = list(ranges(dist_branches[k][3]))
                     print(tem[j][0], tem[j][1])
@@ -193,7 +192,6 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
 
             st.write("Total: " + str(total).center(60))
             st.divider()
-            tab_number += 1
             #print(i, dist_branches)
 
     #st.write(res)
