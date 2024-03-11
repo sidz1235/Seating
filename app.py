@@ -11,7 +11,7 @@ def ranges(i):
         yield group[0][1], group[-1][1]
 
 # Set the title of the page
-# st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 st.title("Vasavi College of Engineering")
 
 file = st.file_uploader("Upload a CSV/XLSX/XLS file", type=["csv", "xlsx", "xls"])
