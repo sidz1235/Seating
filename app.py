@@ -10,12 +10,13 @@ def ranges(i):
         group = list(group)
         yield group[0][1], group[-1][1]
 
-# Set the title of the page
-#st.set_page_config(layout="wide")
+
 st.title("Vasavi College of Engineering")
 
 file = st.file_uploader("Upload a CSV/XLSX/XLS file", type=["csv", "xlsx", "xls"])
 exam_type = st.selectbox("Select Examination Type", ["Internal", "External"])
+
+description = st.text_input("Enter Description of Examination")
 sheet_names = None
 branch = None
 block_rooms = {"R":["R-201","R-202","R-203","R-301","R-207","R-208","R-308","R-309","R-307","R-302","R-303"],
@@ -35,10 +36,6 @@ capacities = []
 if file is not None:
     with pd.ExcelFile(file) as xls:
         sheet_names = xls.sheet_names
-        selected_sheet = st.selectbox("Select Sheet", sheet_names)
-        df = pd.read_excel(xls, sheet_name=selected_sheet)
-    
-    st.write(df)
 
 if(sheet_names is not None):
     branch = st.multiselect("Select Branch", sheet_names)
@@ -58,9 +55,11 @@ room_count = len(selected_rooms)
 hall_count = len(selected_halls)
 
 if(exam_type == "Internal"):
-    capacities = st.selectbox("Select Capacity", [30, 45, 60])
+    capacities = st.selectbox("Select Capacity", [30, 45, 52, 60])
 else:
     capacities = 0
+
+spacing = st.number_input(min_value=0, label="Spacing")
 
 if(st.button("Generate Seating") and file and selected_blocks and (selected_halls or selected_rooms) and branch):
     res = logic.generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam_type, capacities)
@@ -68,8 +67,19 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
     cur_row = 0
     cur_col = 0
 
-    for i in res.keys():
+    tabs = st.tabs(list(res.keys()))
+
+    for count, i in enumerate(res.keys()):
+        
+
+        with tabs[count]:
+
+            for _ in range(spacing):
+                st.markdown("<br>",unsafe_allow_html=True)
+            
+            st.markdown("<br>",unsafe_allow_html=True)
             st.header('Vasavi College Of Engineering')
+            st.subheader(description)
             st.markdown("<br>",unsafe_allow_html=True)
             
             st.subheader("Room No : " + i)
@@ -135,11 +145,14 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
                     for z in range(len(res[i][x][y])):
                         if(len(res[i][x][y][z]) > 2):
                             res[i][x][y][z] = res[i][x][y][z][5:]
+                        if(res[i][x][y][z] == "-1"):
+                            res[i][x][y][z] = ""
                             
             outputdframe = (pd.DataFrame(res[i]))
             
             output_df = pd.DataFrame(res[i]).rename(columns={0: 'Desk-1', 1: 'Desk-2', 2: 'Desk-3', 3: 'Desk-4', 4: 'Desk-5', 5: 'Desk-6'})  
-            
+
+            print(output_df)
 
             if(i in selected_halls):
                 st.dataframe(output_df, hide_index = True, use_container_width = True, height = 422)
@@ -159,7 +172,7 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
                 branch_list = ""
                 for j in range(len(list(ranges(dist_branches[k][3])))):
                     tem = list(ranges(dist_branches[k][3]))
-                    print(tem[j][0], tem[j][1])
+                    #print(tem[j][0], tem[j][1])
                     if(tem[j][0] == tem[j][1]):
                         branch_list += (str(str(tem[j][0])[:4]+"-"+str(tem[j][0])[4:6]+"-"+str(tem[j][0])[6:9]+"-"+str(tem[j][0])[9:]+",  ").center(30))
                     else:
@@ -177,11 +190,16 @@ if(st.button("Generate Seating") and file and selected_blocks and (selected_hall
 
             st.write(f"Total Number of Students in Room No {i}    :  " + str(total).center(60))
 
+            st.write("Total Number of Students Present  :  ")
+            st.write("Total Number of Students Absent   :  ")
+            st.write("Roll Number of Absentees")
+
             st.markdown("<br>",unsafe_allow_html=True)
             st.markdown("<br>",unsafe_allow_html=True)
             st.markdown("<br>",unsafe_allow_html=True)
             st.markdown("<br>",unsafe_allow_html=True)
             st.divider()
+     
 
 
 

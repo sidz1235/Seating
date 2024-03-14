@@ -298,6 +298,60 @@ def generate(file, selected_blocks, selected_halls, selected_rooms, branch, exam
                                 benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
                                 counters[cur_right][0] += 1
             rooms.append(benches)
+    elif(capacities == 52):
+        for i in range(len(selected_rooms)):
+            count = 0
+            m = 5
+            n = 6
+            benches = [[["-1", "-1"] for x in range(n)] for y in range(m)]
+            if(len(sheets) == 1):
+                for x in range(m):
+                    for y in range(n):
+                        if(counters[cur_left][0] >= counters[cur_left][1]):
+                            break
+                        benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                        counters[cur_left][0] += 1
+            else:
+                cur_left, cur_right = 0, 1
+                while(cur_left < len(counters) and counters[cur_left][0] >= counters[cur_left][1]):
+                    cur_left += 1
+                while(cur_right == cur_left or (cur_right < len(counters) and counters[cur_right][0] >= counters[cur_right][1])):
+                    cur_right += 1
+
+                for x in range(m):
+                    for y in range(n):
+                        
+                        if(cur_left<len(counters)):
+                            if(counters[cur_left][0] >= counters[cur_left][1]):
+                                if(cur_left>cur_right):
+                                    cur_left += 1
+                                else:
+                                    cur_left += 1
+                                    if(cur_left == cur_right):
+                                        cur_left += 1
+                                    
+                        if(cur_right<len(counters)):
+                            if(counters[cur_right][0] >= counters[cur_right][1]):
+                                if(cur_right>cur_left):
+                                    cur_right += 1
+                                else:
+                                    cur_right += 1
+                                    if(cur_right == cur_left):
+                                        cur_right += 1
+                            
+                                    
+                        if(cur_left<len(counters)):
+                            if(counters[cur_left][0] < counters[cur_left][1]):
+                                benches[x][y][0] = sheets[cur_left][counters[cur_left][0]]
+                                counters[cur_left][0] += 1
+                        if(cur_right<len(counters)):
+                            if(counters[cur_right][0] < counters[cur_right][1]):
+                                if(count == 22):
+                                    continue
+                                benches[x][y][1] = sheets[cur_right][counters[cur_right][0]]
+                                counters[cur_right][0] += 1
+                                count += 1
+            rooms.append(benches)
     elif(capacities == 30):
 
         count = 0
